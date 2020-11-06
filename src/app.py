@@ -1,18 +1,11 @@
-from flask import Flask, redirect, url_for
+from flask import Flask
 
-app = Flask(__name__)
+def create_app():
+    app = Flask(__name__, instance_relative_config=False)
 
-@app.route("/")
-def home():
-    return "Hello from flask"
+    with app.app_context():
+        from .api import compound
+        app.register_blueprint(compound.compound_bp)
 
-@app.route("/<name>")
-def user(name):
-    return f"Hello from {name}"
+    return app
 
-@app.route("/admin")
-def admin():
-    return redirect(url_for("user", name="super admin"))
-
-if __name__ == "__main__":
-    app.run()
